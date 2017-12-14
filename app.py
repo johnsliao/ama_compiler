@@ -13,6 +13,12 @@ reddit = praw.Reddit(client_id=client_id, client_secret=client_secret,
                      password=password, user_agent=user_agent,
                      username=username)
 
+footer = '''
+---
+^(I'm a bot. I compile AMAs to make them easier to read.)
+
+[Source] (https://github.com/johnsliao/ama_compiler)
+'''
 
 def compile(submission):
     """
@@ -41,6 +47,8 @@ def compile(submission):
                 comment_text += question + '|' + answer
                 comment_text += '\n'
                 break
+
+    comment_text += footer
 
     return comment_text
 
