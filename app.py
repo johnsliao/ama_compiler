@@ -51,6 +51,9 @@ def compile(submission):
                 if answer.endswith('?'):
                     break
 
+                if len(comment_text + question + '|' + answer + '|[Here](' + comment.permalink + ')') > 10002:
+                    break
+
                 comment_text += question + '|' + answer + '|[Here](' + comment.permalink + ')'
                 comment_text += '\n'
                 break
@@ -86,6 +89,7 @@ if __name__ == '__main__':
             submission.reply(comment_text)
             c.execute("insert into posts (date, post_id) values (?,?)", [datetime.date.today(), submission.id])
             conn.commit()
+            print('Successfully added comment to {}'.format(submission.id))
         except Exception as e:
             print(e)
             time.sleep(10 * 60)
