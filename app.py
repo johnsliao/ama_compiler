@@ -2,7 +2,6 @@ import os
 import praw
 import sqlite3
 import datetime
-import time
 
 client_id = os.environ.get('REDDIT_CLIENT_ID')
 client_secret = os.environ.get('REDDIT_SECRET')
@@ -30,6 +29,8 @@ def compile(submission):
     :param submission:
     :return:
     """
+    comments_exist = False
+
     comment_text = ''
     comment_text += header
     comment_text += '\n'
@@ -51,14 +52,18 @@ def compile(submission):
                 if answer.endswith('?'):
                     break
 
-                if len(comment_text + question + '|' + answer + '|[Here](' + comment.permalink + ')') > 10002:
+                if len(comment_text + question + '|' + answer + '|[Here](' + comment.permalink + ')' + footer) > 9500:
                     break
 
                 comment_text += question + '|' + answer + '|[Here](' + comment.permalink + ')'
                 comment_text += '\n'
+                comments_exist = True
                 break
 
     comment_text += footer
+
+    if not comments_exist:
+        return None
 
     return comment_text
 
@@ -67,13 +72,13 @@ if __name__ == '__main__':
     conn = sqlite3.connect('db.db')
     c = conn.cursor()
 
-    for submission in reddit.subreddit('ama').hot(limit=256):
+    for submission in reddit.subreddit('ama').top(limit=256, time_filter='week'):
         submission_age = datetime.datetime.now() - datetime.datetime.utcfromtimestamp(submission.created_utc)  # seconds
         if submission_age < datetime.timedelta(seconds=60 * 60 * 24):
             # Post is less than 24 hours old
             continue
-        if submission_age > datetime.timedelta(seconds=60 * 60 * 48):
-            # Post is older than 48 hours old
+        if submission_age > datetime.timedelta(seconds=60 * 60 * 24 * 7):
+            # Post is older than 1 week old
             continue
         if '[Request]' in submission.title:
             continue
@@ -86,10 +91,14 @@ if __name__ == '__main__':
 
         try:
             comment_text = compile(submission)
+
+            if not comment_text:
+                continue
+
             submission.reply(comment_text)
             c.execute("insert into posts (date, post_id) values (?,?)", [datetime.date.today(), submission.id])
             conn.commit()
             print('Successfully added comment to {}'.format(submission.id))
         except Exception as e:
             print(e)
-            time.sleep(10 * 60)
+            exit(1)
