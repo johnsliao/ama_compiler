@@ -23,7 +23,11 @@ This bot makes it easier for redditors to read through the question and answers 
     REDDIT_USER_AGENT
     REDDIT_USERNAME
     ```
-4. Run the script (used Python 2.7.x)
+4. Set up sqlite database (used Python 2.7.x)
+    ```
+    python db.py
+    ```
+5. Run the script (used Python 2.7.x)
     ```
     python app.py
     ```
