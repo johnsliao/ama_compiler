@@ -2,6 +2,7 @@ import os
 import praw
 import sqlite3
 import datetime
+import time
 
 client_id = os.environ.get('REDDIT_CLIENT_ID')
 client_secret = os.environ.get('REDDIT_SECRET')
@@ -12,13 +13,16 @@ username = os.environ.get('REDDIT_USERNAME')
 reddit = praw.Reddit(client_id=client_id, client_secret=client_secret,
                      password=password, user_agent=user_agent,
                      username=username)
+header = '''
+Table of Questions and Answers. Original answer linked - Please upvote the original questions and answers. (I'm a bot.)
+***
+'''
 
 footer = '''
 ---
-^(I'm a bot. I compile AMAs to make them easier to read.)
-
 [Source] (https://github.com/johnsliao/ama_compiler)
 '''
+
 
 def compile(submission):
     """
@@ -26,9 +30,12 @@ def compile(submission):
     :param submission:
     :return:
     """
-    comment_text = 'Question | Answer'
+    comment_text = ''
+    comment_text += header
     comment_text += '\n'
-    comment_text += '---------|----------|'
+    comment_text += 'Question | Answer | Link'
+    comment_text += '\n'
+    comment_text += '---------|----------|----------|'
     comment_text += '\n'
 
     author = submission.author
@@ -44,7 +51,7 @@ def compile(submission):
                 if answer.endswith('?'):
                     break
 
-                comment_text += question + '|' + answer
+                comment_text += question + '|' + answer + '|[Here](' + comment.permalink + ')'
                 comment_text += '\n'
                 break
 
@@ -58,9 +65,15 @@ if __name__ == '__main__':
     c = conn.cursor()
 
     for submission in reddit.subreddit('ama').hot(limit=256):
+        submission_age = datetime.datetime.now() - datetime.datetime.utcfromtimestamp(submission.created_utc)  # seconds
+        if submission_age < datetime.timedelta(seconds=60 * 60 * 24):
+            # Post is less than 24 hours old
+            continue
+        if submission_age > datetime.timedelta(seconds=60 * 60 * 48):
+            # Post is older than 48 hours old
+            continue
         if '[Request]' in submission.title:
             continue
-
         if submission.score < 10:
             continue
 
@@ -68,9 +81,11 @@ if __name__ == '__main__':
         if c.fetchone():
             continue
 
-        if datetime.datetime.now() - datetime.datetime.utcfromtimestamp(submission.created_utc) < datetime.timedelta(
-                seconds=60 * 60 * 24):
-            # Post is less than 24 hours old
-            continue
-
-        print(compile(submission))
+        try:
+            comment_text = compile(submission)
+            submission.reply(comment_text)
+            c.execute("insert into posts (date, post_id) values (?,?)", [datetime.date.today(), submission.id])
+            conn.commit()
+        except Exception as e:
+            print(e)
+            time.sleep(10 * 60)
