@@ -6,11 +6,12 @@ This bot makes it easier for redditors to read through the question and answers 
 ## When will the bot post to a thread?
 - Comment score must be > 0
 - Comment must end with a "?"
-- Submission is older than 24 hours old
-- Submission is younger than 48 hours old
+- Submission is older than 24 hours
+- Submission is younger than 7 days
 - Submission score must be greater than 10
 - Submission is not a `[REQUEST]`
 - Have not posted on the thread before (stored in a sqlite database)
+- Comment total length is not longer than 9500 characters
 
 ## Setting up your own ama bot
 1. Clone this repo
