@@ -3,6 +3,8 @@ import praw
 import sqlite3
 import datetime
 
+from praw.models import MoreComments
+
 client_id = os.environ.get('REDDIT_CLIENT_ID')
 client_secret = os.environ.get('REDDIT_SECRET')
 password = os.environ.get('REDDIT_PASSWORD')
@@ -41,10 +43,14 @@ def compile(submission):
 
     author = submission.author
     for comment in submission.comments:
+        if isinstance(comment, MoreComments):
+            continue
         if comment.score <= 0:
             continue
 
         for reply in comment._replies:
+            if isinstance(reply, MoreComments):
+                continue
             if reply.author == author:
                 answer = ' '.join([l.strip() for l in reply.body.split('\n')])
                 question = ' '.join([l.strip() for l in comment.body.split('\n')])
@@ -73,6 +79,7 @@ if __name__ == '__main__':
     c = conn.cursor()
 
     for submission in reddit.subreddit('ama').top(limit=256, time_filter='week'):
+
         submission_age = datetime.datetime.now() - datetime.datetime.utcfromtimestamp(submission.created_utc)  # seconds
         if submission_age < datetime.timedelta(seconds=60 * 60 * 24):
             # Post is less than 24 hours old
