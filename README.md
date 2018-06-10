@@ -1,5 +1,7 @@
 # Reddit AMA Bot
 
+This script is powering [u/ama_compiler_bot](https://www.reddit.com/user/ama_compiler_bot/).
+
 ## What does this bot do?
 This bot makes it easier for redditors to read through the question and answers from /r/AMA.
 
