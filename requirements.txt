@@ -1,6 +1,12 @@
+black==25.1.0
 certifi==2025.1.31
 charset-normalizer==3.4.1
+click==8.1.8
 idna==3.10
+mypy-extensions==1.0.0
+packaging==24.2
+pathspec==0.12.1
+platformdirs==4.3.6
 praw==7.8.1
 prawcore==2.4.0
 python-dotenv==1.0.1
