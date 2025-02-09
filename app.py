@@ -27,9 +27,9 @@ Table of Questions and Answers. Original answer linked - Please upvote the origi
 """
 
 footer = """
-# ---
-# [Source](https://github.com/johnsliao/ama_compiler)
-# """
+---
+[Source](https://github.com/johnsliao/ama_compiler)
+"""
 
 
 def compile(submission):
