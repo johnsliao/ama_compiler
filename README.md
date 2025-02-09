@@ -29,11 +29,17 @@ This bot makes it easier for redditors to read through the question and answers 
    REDDIT_USER_AGENT
    REDDIT_USERNAME
    ```
-4. Set up sqlite database
+4. Install dependencies
+   ```
+   virtualenv -p python3 venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+5. Set up sqlite database
    ```
    python db.py
    ```
-5. Run the script
+6. Run the script
    ```
    python app.py
    ```
