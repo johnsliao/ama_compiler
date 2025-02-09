@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
             posted += 1
 
-            if posted > max_post_per_run:
+            if posted == max_post_per_run:
                 print("Posted enough for this run")
                 exit(0)
         except Exception as e:
