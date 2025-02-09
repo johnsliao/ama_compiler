@@ -3,9 +3,11 @@
 This script is powering [u/ama_compiler_bot](https://www.reddit.com/user/ama_compiler_bot/).
 
 ## What does this bot do?
+
 This bot makes it easier for redditors to read through the question and answers from /r/AMA.
 
 ## When will the bot post to a thread?
+
 - Comment score must be > 0
 - Comment must end with a "?"
 - Submission is older than 24 hours
@@ -16,21 +18,22 @@ This bot makes it easier for redditors to read through the question and answers 
 - Comment total length is not longer than 9500 characters
 
 ## Setting up your own ama bot
+
 1. Clone this repo
 2. Get reddit [API keys](https://github.com/reddit/reddit/wiki/API).
 3. Set the following environment variables:
-    ```
-    REDDIT_CLIENT_ID
-    REDDIT_SECRET
-    REDDIT_PASSWORD
-    REDDIT_USER_AGENT
-    REDDIT_USERNAME
-    ```
-4. Set up sqlite database (used Python 2.7.x)
-    ```
-    python db.py
-    ```
-5. Run the script (used Python 2.7.x)
-    ```
-    python app.py
-    ```
+   ```
+   REDDIT_CLIENT_ID
+   REDDIT_SECRET
+   REDDIT_PASSWORD
+   REDDIT_USER_AGENT
+   REDDIT_USERNAME
+   ```
+4. Set up sqlite database
+   ```
+   python db.py
+   ```
+5. Run the script
+   ```
+   python app.py
+   ```

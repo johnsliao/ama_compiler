@@ -2,6 +2,9 @@ import os
 import praw
 import sqlite3
 import datetime
+from dotenv import load_dotenv 
+
+load_dotenv() 
 
 from praw.models import MoreComments
 
@@ -20,9 +23,9 @@ Table of Questions and Answers. Original answer linked - Please upvote the origi
 '''
 
 footer = '''
----
-[Source](https://github.com/johnsliao/ama_compiler)
-'''
+# ---
+# [Source](https://github.com/johnsliao/ama_compiler)
+# '''
 
 
 def compile(submission):
@@ -106,6 +109,7 @@ if __name__ == '__main__':
             c.execute("insert into posts (date, post_id) values (?,?)", [datetime.date.today(), submission.id])
             conn.commit()
             print('Successfully added comment to {}'.format(submission.id))
+            exit(1)
         except Exception as e:
             print(e)
             exit(1)
